@@ -15,8 +15,8 @@ class ChatroomController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function send_message(Request $request){
-        //
+    public function sendMessage(Request $request){
+        # insert new message
         $insertMessage = new message();
         $insertMessage->message   = $request->input('message') ;
         $insertMessage->room_id   = $request->input('room_id') ;

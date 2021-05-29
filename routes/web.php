@@ -32,7 +32,7 @@ Route::get('/message/{id}', function () {
 
 
 
-Route::post('/send-message','ChatroomController@send_message');
+Route::post('/send-message','ChatroomController@sendMessage');
 Route::get('/get-message/{id}','ChatroomController@showMessages');
 Route::get('/last-message/{room_id}','ChatroomController@lastMessage');
 Route::get('/get-prevs-messages','ChatroomController@getPrevsMessages');
