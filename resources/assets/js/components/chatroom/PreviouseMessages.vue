@@ -55,20 +55,23 @@ export default {
         then(function(response){
             let messages = Object.values(response.data.messages);
             // messages.reverse();
-            //console.log(messages);
+            console.log(response.data);
             messages.forEach(function(value,key){
+                console.log(Object.values(response.data.messages));
                 selfdata.users.push({
                     img:'imp1',
-                    name:'mohamed',
-                    id:value.room_id,
-                    lastMessage:value.message,
+                    name:value.users,
+                    id:value.id,
+                    lastMessage:value.messages,
                     type:'ks-from',
                     date:value.created_at,
+                    // users_ids:response.data.users.value.room_id,
                 });
             });
         }).catch(function(error){
             console.log(error);
         });
     },
+
 };
 </script>

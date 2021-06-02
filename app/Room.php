@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\User;
 class Room extends Model
 {
     //
@@ -13,7 +13,7 @@ class Room extends Model
     }
 
     function users(){
-        return $this->belongsToMany('App\User','room_users','room_id','user_id');
+        return $this->belongsToMany(User::class,'room_user','room_id','user_id');
     }
 
 

@@ -3,7 +3,11 @@ import VueRouter from "vue-router";
 import Home from "./pages/Home.vue";
 import About from "./pages/about.vue";
 import Dailoge from "./pages/Home.vue";
+
+
 Vue.use(VueRouter);
+
+
 
 const routes = [{
         path: "/",

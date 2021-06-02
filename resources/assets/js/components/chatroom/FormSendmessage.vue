@@ -29,6 +29,7 @@ export default {
             })
             .then(function (response) {
                 // handle success
+                console.log(response.data);
                 Event.$emit('MessageSent',{'room_id':selfdata.room_id,'message':selfdata.message,'created_at':''});
                 selfdata.message = '';
 

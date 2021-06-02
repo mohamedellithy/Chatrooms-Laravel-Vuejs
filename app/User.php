@@ -32,11 +32,11 @@ class User extends Authenticatable
     }
 
     function rooms(){
-        return $this->belongsToMany('App\Room','room_users','user_id','room_id');
+        return $this->belongsToMany('App\Room','room_user','user_id','room_id');
     }
 
     function User_IDS(){
-        return $this->belongsToMany('App\Room','room_users','user_id','room_id')->withPivot('user_id');
+        return $this->belongsToMany('App\Room','room_user','user_id','room_id')->withPivot('user_id');
     }
 
     function canJoinRoom(){
@@ -47,5 +47,9 @@ class User extends Authenticatable
         $id_users = $this->rooms()->pluck('user_id')->toArray();
         $channelKey = implode('',$id_users);
         return $channelKey;
+    }
+
+    function UserActive(){
+        return $this->update(['is_active'=>1]);
     }
 }

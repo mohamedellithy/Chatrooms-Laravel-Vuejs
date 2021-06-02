@@ -12,7 +12,12 @@ window.$ = require('jquery');
 
 import router from './router';
 import filter from './filter';
-
+import VueProgressBar from 'vue-progressbar';
+Vue.use(VueProgressBar, {
+    color: '#3f51b5',
+    failedColor: 'red',
+    height: '2px'
+});
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -32,6 +37,5 @@ Vue.component('form-sendmessage', require('./components/chatroom/FormSendmessage
 const app = new Vue({
     el: '#app',
     router,
-    filter,
-
+    filter
 });

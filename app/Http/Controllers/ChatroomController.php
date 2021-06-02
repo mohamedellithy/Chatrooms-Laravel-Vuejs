@@ -7,6 +7,8 @@ use App\message;
 use App\RoomUser;
 use DB;
 use Auth;
+use App\Room;
+use App\User;
 use Illuminate\Support\Collection;
 use App\Events\chatroom;
 class ChatroomController extends Controller
@@ -28,8 +30,9 @@ class ChatroomController extends Controller
         $insertMessage->room_id   = $request->input('room_id') ;
         $insertMessage->sender_id = Auth::user()->id ;
         $insertMessage->save();
-        $test =  RoomUser::where('room_id',$request->input('room_id'))->get()->map(function($value,$index) use ($insertMessage){
-            broadcast(new ChatRoom($insertMessage,$value['user_id']) )->toOthers();
+        $test =  Room::find($request->input('room_id'))->users->map(function($value,$index) use ($insertMessage){
+            // return $value;
+            broadcast(new chatroom($insertMessage,$value['id']) )->toOthers();
         })->all();
         return (['test'=>$test,'room_id'=>$request->input('room_id'),'message'=>$request->input('message')]);
     }
@@ -70,10 +73,16 @@ class ChatroomController extends Controller
      * @return \Illuminate\Http\Response
      */
     function getPrevsMessages(){
-        $rooms = Auth::user()->rooms->unique('id');
-        $messages = collect($rooms)->map(function($value,$index){
-             return $value->messages;
-        })->flatten()->sortByDesc('created_at')->unique('room_id');
-        return (['messages'=> $messages]);
+        $rooms_id = Auth::user()->rooms->pluck('id')->toArray();
+        $rooms    = Room::select('creator_id','id','created_at')
+                    ->whereIN('id',$rooms_id)
+                    ->with(['users'=>function($query){
+                        $query->where('users.id','!=',Auth::user()->id)->select('users.id','users.name')->groupBy('users.id');
+                    }])->with([
+                    'messages'=>function($query){
+                        $query->latest()->limit(1);
+                    }])->get();
+
+        return (['messages'=> $rooms]);
     }
 }

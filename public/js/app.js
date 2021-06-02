@@ -14641,6 +14641,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__router__ = __webpack_require__(43);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__filter__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__filter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__filter__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_progressbar__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vue_progressbar___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vue_progressbar__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -14655,6 +14657,12 @@ window.$ = __webpack_require__(3);
 
 
 
+
+Vue.use(__WEBPACK_IMPORTED_MODULE_2_vue_progressbar___default.a, {
+  color: '#3f51b5',
+  failedColor: 'red',
+  height: '2px'
+});
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -14675,7 +14683,6 @@ var app = new Vue({
   el: '#app',
   router: __WEBPACK_IMPORTED_MODULE_0__router__["a" /* default */],
   filter: __WEBPACK_IMPORTED_MODULE_1__filter___default.a
-
 });
 
 /***/ }),
@@ -14736,7 +14743,7 @@ window.Pusher = __webpack_require__(39);
 
 window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo__["a" /* default */]({
   broadcaster: 'pusher',
-  key: '247e79c4f42945517f91',
+  key: 'd5d3129eab971c7e6564',
   cluster: 'eu',
   encrypted: false
   // authEndpoint: "broadcasting/auth",
@@ -55619,6 +55626,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 
 
+
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]);
 
 var routes = [{
@@ -58889,6 +58897,26 @@ Vue.filter('capitalize', function (value, length) {
     return value.substring(0, length) + ' .. ';
 });
 
+Vue.filter('FetchNames', function (value) {
+    if (!value) return '';
+    var names = '';
+    value.forEach(function (user, key) {
+        names += user.name + ' / ';
+    });
+
+    return names;
+});
+
+Vue.filter('FetchMessage', function (value) {
+    if (!value) return '';
+    var Lastmessage = '';
+    value.forEach(function (message, key) {
+        Lastmessage = message.message;
+    });
+
+    return Lastmessage;
+});
+
 /***/ }),
 /* 49 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -59228,21 +59256,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         axios.get('/get-prevs-messages').then(function (response) {
             var messages = Object.values(response.data.messages);
             // messages.reverse();
-            //console.log(messages);
+            console.log(response.data);
             messages.forEach(function (value, key) {
+                console.log(Object.values(response.data.messages));
                 selfdata.users.push({
                     img: 'imp1',
-                    name: 'mohamed',
-                    id: value.room_id,
-                    lastMessage: value.message,
+                    name: value.users,
+                    id: value.id,
+                    lastMessage: value.messages,
                     type: 'ks-from',
                     date: value.created_at
+                    // users_ids:response.data.users.value.room_id,
                 });
             });
         }).catch(function (error) {
             console.log(error);
         });
     }
+
 });
 
 /***/ }),
@@ -59444,6 +59475,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -59454,10 +59487,39 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             readMessage: 'unread'
         };
     },
+    mounted: function mounted() {
+        //this.listen();
+        // this.listenForWhisper();
+    },
+
     methods: {
         GetDialoge: function GetDialoge() {
             Event.$emit('ShowDialoge');
         }
+        // listen() {
+        //     Echo.join('Online')
+        //         .joining((user) => {
+        //             //axios.put('/user-online/' + user.id + '/online?api_token=' + user.api_token, {});
+        //             console.log('join');
+        //             axios.get('/user-online/' + user.id)
+        //                 .then(function(response) {
+        //                     console.log(response);
+        //                 })
+        //                 .catch(function(error) {
+        //                     console.log(error);
+        //                 });
+        //         })
+        //         .leaving((user) => {
+        //             console.log('leave');
+        //             //axios.put('/user-offline/' + user.id + '/online?api_token=' + user.api_token, {});
+        //         })
+        //         .listen('UserOnline', (e) => {
+        //             console.log(e);
+        //         })
+        //         .listen('UserOffline', (e) => {
+        //             //this.friend = e.user;
+        //         });
+        // }
     }
 });
 
@@ -59491,14 +59553,15 @@ var render = function() {
           _vm._v(" " + _vm._s(_vm.id))
         ]),
         _vm._v(" "),
+        _c("span", { staticClass: "online-green-point offline" }),
+        _vm._v(" "),
         _c("div", { staticClass: "ks-body" }, [
           _c("div", { staticClass: "ks-name" }, [
             _vm._v(
-              "\n                " + _vm._s(_vm.name) + "\n                "
-            ),
-            _c("span", { staticClass: "ks-datetime" }, [
-              _vm._v(" " + _vm._s(_vm.date))
-            ])
+              "\n             " +
+                _vm._s(_vm._f("FetchNames")(_vm.name)) +
+                "\n            "
+            )
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "ks-message" }, [
@@ -59512,9 +59575,18 @@ var render = function() {
             }),
             _vm._v(
               "\n                " +
-                _vm._s(_vm._f("capitalize")(_vm.lastMessage, 70)) +
+                _vm._s(
+                  _vm._f("capitalize")(
+                    _vm._f("FetchMessage")(_vm.lastMessage),
+                    70
+                  )
+                ) +
                 "\n            "
             )
+          ]),
+          _vm._v(" "),
+          _c("span", { staticClass: "ks-datetime" }, [
+            _vm._v(" " + _vm._s(_vm.date))
           ])
         ])
       ])
@@ -59631,9 +59703,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         Dailoge: function Dailoge() {
             var selfdata = this;
             selfdata.messages = [];
+            this.$Progress.start();
             axios.get('/get-message/' + selfdata.$route.params.id).then(function (response) {
                 var messages = response.data.messages;
                 messages.reverse();
+                selfdata.$Progress.finish();
                 //console.log(response.data.messages);
                 messages.forEach(function (value, key) {
                     selfdata.messages.push({
@@ -59647,6 +59721,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 $('#jspContainers').scrollTop(messageContainerHeight + 200);
             }).catch(function (error) {
                 console.log(error);
+                selfdata.$Progress.fail();
             });
         }
     },
@@ -60207,6 +60282,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'room_id': selfdata.room_id
             }).then(function (response) {
                 // handle success
+                console.log(response.data);
                 Event.$emit('MessageSent', { 'room_id': selfdata.room_id, 'message': selfdata.message, 'created_at': '' });
                 selfdata.message = '';
             }).catch(function (error) {
@@ -60293,6 +60369,17 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 74 */,
+/* 75 */,
+/* 76 */,
+/* 77 */,
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+!function(t,o){ true?module.exports=o():"function"==typeof define&&define.amd?define(o):t.VueProgressBar=o()}(this,function(){"use strict";!function(){if("undefined"!=typeof document){var t=document.head||document.getElementsByTagName("head")[0],o=document.createElement("style"),i=" .__cov-progress { opacity: 1; z-index: 999999; } ";o.type="text/css",o.styleSheet?o.styleSheet.cssText=i:o.appendChild(document.createTextNode(i)),t.appendChild(o)}}();var t="undefined"!=typeof window,r={render:function(){var t=this,o=t.$createElement;return(t._self._c||o)("div",{staticClass:"__cov-progress",style:t.style})},staticRenderFns:[],name:"VueProgress",serverCacheKey:function(){return"Progress"},computed:{style:function(){var t=this.progress,o=t.options,i=!!o.show,e=o.location,s={"background-color":o.canSuccess?o.color:o.failedColor,opacity:o.show?1:0,position:o.position};return"top"===e||"bottom"===e?("top"===e?s.top="0px":s.bottom="0px",o.inverse?s.right="0px":s.left="0px",s.width=t.percent+"%",s.height=o.thickness,s.transition=(i?"width "+o.transition.speed+", ":"")+"opacity "+o.transition.opacity):"left"!==e&&"right"!==e||("left"===e?s.left="0px":s.right="0px",o.inverse?s.top="0px":s.bottom="0px",s.height=t.percent+"%",s.width=o.thickness,s.transition=(i?"height "+o.transition.speed+", ":"")+"opacity "+o.transition.opacity),s},progress:function(){return t?window.VueProgressBarEventBus.RADON_LOADING_BAR:{percent:0,options:{canSuccess:!0,show:!1,color:"rgb(19, 91, 55)",failedColor:"red",thickness:"2px",transition:{speed:"0.2s",opacity:"0.6s",termination:300},location:"top",autoRevert:!0,inverse:!1}}}}};return{install:function(o){var t=1<arguments.length&&void 0!==arguments[1]?arguments[1]:{},i=(o.version.split(".")[0],"undefined"!=typeof window),e={$vm:null,state:{tFailColor:"",tColor:"",timer:null,cut:0},init:function(t){this.$vm=t},start:function(t){var o=this;this.$vm&&(t||(t=3e3),this.$vm.RADON_LOADING_BAR.percent=0,this.$vm.RADON_LOADING_BAR.options.show=!0,this.$vm.RADON_LOADING_BAR.options.canSuccess=!0,this.state.cut=1e4/Math.floor(t),clearInterval(this.state.timer),this.state.timer=setInterval(function(){o.increase(o.state.cut*Math.random()),95<o.$vm.RADON_LOADING_BAR.percent&&o.$vm.RADON_LOADING_BAR.options.autoFinish&&o.finish()},100))},set:function(t){this.$vm.RADON_LOADING_BAR.options.show=!0,this.$vm.RADON_LOADING_BAR.options.canSuccess=!0,this.$vm.RADON_LOADING_BAR.percent=Math.floor(t)},get:function(){return Math.floor(this.$vm.RADON_LOADING_BAR.percent)},increase:function(t){this.$vm.RADON_LOADING_BAR.percent=Math.min(99,this.$vm.RADON_LOADING_BAR.percent+Math.floor(t))},decrease:function(t){this.$vm.RADON_LOADING_BAR.percent=this.$vm.RADON_LOADING_BAR.percent-Math.floor(t)},hide:function(){var t=this;clearInterval(this.state.timer),this.state.timer=null,setTimeout(function(){t.$vm.RADON_LOADING_BAR.options.show=!1,o.nextTick(function(){setTimeout(function(){t.$vm.RADON_LOADING_BAR.percent=0},100),t.$vm.RADON_LOADING_BAR.options.autoRevert&&setTimeout(function(){t.revert()},300)})},this.$vm.RADON_LOADING_BAR.options.transition.termination)},pause:function(){clearInterval(this.state.timer)},finish:function(){this.$vm&&(this.$vm.RADON_LOADING_BAR.percent=100,this.hide())},fail:function(){this.$vm.RADON_LOADING_BAR.options.canSuccess=!1,this.$vm.RADON_LOADING_BAR.percent=100,this.hide()},setFailColor:function(t){this.$vm.RADON_LOADING_BAR.options.failedColor=t},setColor:function(t){this.$vm.RADON_LOADING_BAR.options.color=t},setLocation:function(t){this.$vm.RADON_LOADING_BAR.options.location=t},setTransition:function(t){this.$vm.RADON_LOADING_BAR.options.transition=t},tempFailColor:function(t){this.state.tFailColor=this.$vm.RADON_LOADING_BAR.options.failedColor,this.$vm.RADON_LOADING_BAR.options.failedColor=t},tempColor:function(t){this.state.tColor=this.$vm.RADON_LOADING_BAR.options.color,this.$vm.RADON_LOADING_BAR.options.color=t},tempLocation:function(t){this.state.tLocation=this.$vm.RADON_LOADING_BAR.options.location,this.$vm.RADON_LOADING_BAR.options.location=t},tempTransition:function(t){this.state.tTransition=this.$vm.RADON_LOADING_BAR.options.transition,this.$vm.RADON_LOADING_BAR.options.transition=t},revertColor:function(){this.$vm.RADON_LOADING_BAR.options.color=this.state.tColor,this.state.tColor=""},revertFailColor:function(){this.$vm.RADON_LOADING_BAR.options.failedColor=this.state.tFailColor,this.state.tFailColor=""},revertLocation:function(){this.$vm.RADON_LOADING_BAR.options.location=this.state.tLocation,this.state.tLocation=""},revertTransition:function(){this.$vm.RADON_LOADING_BAR.options.transition=this.state.tTransition,this.state.tTransition={}},revert:function(){this.$vm.RADON_LOADING_BAR.options.autoRevert&&(this.state.tColor&&this.revertColor(),this.state.tFailColor&&this.revertFailColor(),this.state.tLocation&&this.revertLocation(),!this.state.tTransition||void 0===this.state.tTransition.speed&&void 0===this.state.tTransition.opacity||this.revertTransition())},parseMeta:function(t){for(var o in t.func){var i=t.func[o];switch(i.call){case"color":switch(i.modifier){case"set":this.setColor(i.argument);break;case"temp":this.tempColor(i.argument)}break;case"fail":switch(i.modifier){case"set":this.setFailColor(i.argument);break;case"temp":this.tempFailColor(i.argument)}break;case"location":switch(i.modifier){case"set":this.setLocation(i.argument);break;case"temp":this.tempLocation(i.argument)}break;case"transition":switch(i.modifier){case"set":this.setTransition(i.argument);break;case"temp":this.tempTransition(i.argument)}}}}},s=function(t,o){for(var i,e,s=1;s<arguments.length;++s)for(i in e=arguments[s])Object.prototype.hasOwnProperty.call(e,i)&&(t[i]=e[i]);return t}({canSuccess:!0,show:!1,color:"#73ccec",position:"fixed",failedColor:"red",thickness:"2px",transition:{speed:"0.2s",opacity:"0.6s",termination:300},autoRevert:!0,location:"top",inverse:!1,autoFinish:!0},t),n=new o({data:{RADON_LOADING_BAR:{percent:0,options:s}}});i&&(window.VueProgressBarEventBus=n,e.init(n)),o.component("vue-progress-bar",r),o.prototype.$Progress=e}}});
+
 
 /***/ })
 /******/ ]);

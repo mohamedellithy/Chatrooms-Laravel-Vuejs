@@ -44,10 +44,12 @@ export default {
         Dailoge:function(){
             let selfdata = this;
             selfdata.messages = [];
+            this.$Progress.start();
             axios.get('/get-message/'+selfdata.$route.params.id).
             then(function(response){
                 let messages = response.data.messages;
                 messages.reverse();
+                selfdata.$Progress.finish();
                 //console.log(response.data.messages);
                 messages.forEach(function(value,key){
                     selfdata.messages.push({
@@ -56,11 +58,13 @@ export default {
                         date:value.created_at,
                         type:value.type,
                     });
+
                 });
                 let messageContainerHeight = $('#ks-itemsw').height();
                 $('#jspContainers').scrollTop(messageContainerHeight + 200);
             }).catch(function(error){
                 console.log(error);
+                selfdata.$Progress.fail();
             });
         },
     },
@@ -106,6 +110,7 @@ export default {
             });
 
     },
+
 
 };
 </script>
