@@ -4,10 +4,10 @@
         <router-link :to="'/message/'+id">
         <!-- <a href="#"> -->
             <span class="ks-group-amount"> {{ id }}</span>
-            <span class="online-green-point offline"></span>
+            <span class="online-green-point " v-bind:class="[ is_active ? '' : 'offline']"></span>
             <div class="ks-body">
                 <div class="ks-name">
-                 {{ name | FetchNames() }}
+                 {{ users | FetchNames() }}
                 </div>
 
                 <div class="ks-message">
@@ -24,44 +24,39 @@
 
 export default {
     name:'PrevitemMessage',
-    props:['id','img','status','lastMessage','name','date'],
+    props:['id','img','status','lastMessage','users','date','onlineusers'],
+
     data:function(){
         return {
             readMessage : 'unread',
+            // is_active:false,
         }
-    },
-     mounted() {
-        //this.listen();
-        // this.listenForWhisper();
     },
     methods: {
         GetDialoge:function(){
             Event.$emit('ShowDialoge');
         },
-        // listen() {
-        //     Echo.join('Online')
-        //         .joining((user) => {
-        //             //axios.put('/user-online/' + user.id + '/online?api_token=' + user.api_token, {});
-        //             console.log('join');
-        //             axios.get('/user-online/' + user.id)
-        //                 .then(function(response) {
-        //                     console.log(response);
-        //                 })
-        //                 .catch(function(error) {
-        //                     console.log(error);
-        //                 });
-        //         })
-        //         .leaving((user) => {
-        //             console.log('leave');
-        //             //axios.put('/user-offline/' + user.id + '/online?api_token=' + user.api_token, {});
-        //         })
-        //         .listen('UserOnline', (e) => {
-        //             console.log(e);
-        //         })
-        //         .listen('UserOffline', (e) => {
-        //             //this.friend = e.user;
-        //         });
-        // }
+    },
+    computed:{
+         is_active:function(){
+            let self = this;
+
+            let ids    = self.onlineusers.map(function(u,i){
+                return u.id;
+            });
+
+            let online = self.users.map(function(value){
+                if(ids.indexOf(value.id) == -1){
+                    return false;
+                }
+                return true;
+            });
+
+            if(online.indexOf(true) != -1){
+                return true;
+            }
+
+         }
     }
 }
 </script>

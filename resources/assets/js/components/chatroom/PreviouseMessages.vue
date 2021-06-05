@@ -18,9 +18,10 @@
                             :id="user.id"
                             :status="user.status"
                             :img="user.img"
-                            :name="user.name"
+                            :users="user.users"
                             :lastMessage="user.lastMessage"
-                            :date="user.date">
+                            :date="user.date"
+                            :onlineusers="OnlineUsers">
                         </previtem-message>
                     </ul>
                 </div>
@@ -41,26 +42,24 @@
 <script>
 export default {
     name:'PreviouseMessages',
+    props:['OnlineUsers'],
     data:function(){
         return {
             users:[],
         }
     },
-    components:{
-    },
+
     created:function(){
         let selfdata = this;
         // show dialoge between sender and reciever
         axios.get('/get-prevs-messages').
         then(function(response){
             let messages = Object.values(response.data.messages);
-            // messages.reverse();
-            console.log(response.data);
             messages.forEach(function(value,key){
-                console.log(Object.values(response.data.messages));
+                //console.log(Object.values(response.data.messages));
                 selfdata.users.push({
                     img:'imp1',
-                    name:value.users,
+                    users:value.users,
                     id:value.id,
                     lastMessage:value.messages,
                     type:'ks-from',

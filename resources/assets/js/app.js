@@ -10,6 +10,11 @@ window.Vue = require('vue');
 window.Event = new Vue();
 window.$ = require('jquery');
 
+// main.js
+Vue.prototype.$userId = document.querySelector("meta[name='user-id']").getAttribute('content');
+Vue.prototype.$activeUser = [];
+
+
 import router from './router';
 import filter from './filter';
 import VueProgressBar from 'vue-progressbar';
@@ -37,5 +42,6 @@ Vue.component('form-sendmessage', require('./components/chatroom/FormSendmessage
 const app = new Vue({
     el: '#app',
     router,
-    filter
+    filter,
+
 });

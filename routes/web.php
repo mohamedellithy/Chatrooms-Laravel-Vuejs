@@ -38,5 +38,7 @@ Route::get('/get-prevs-messages','ChatroomController@getPrevsMessages');
 
 
 
+Route::get('/user-online/{id}','ChatroomController@userOnline');
+Route::get('/user-offline/{id}','ChatroomController@userOffline');
 
-// Broadcast::routes(['middleware' => ['auth:api']]);
+Route::get('/get-members/{id}','ChatroomController@getMembers');

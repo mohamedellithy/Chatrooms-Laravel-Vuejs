@@ -16,8 +16,17 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 });
 
 
-Broadcast::channel('ChatroomChannel.{channelKey}', function ($user,$channelKey){
+Broadcast::channel('ChatroomChannel.{user_id}', function ($user,$user_id){
     # $rooms_allow = RoomUser::where('user_id',$user->id)->pluck('room_id')->toArray();
     # $status      = !empty($rooms_allow[$room_id]) ? true : false;
-    return true;
+     return true;
+
+});
+
+
+Broadcast::channel('LiveChatroom', function ($user){
+    # $rooms_allow = RoomUser::where('user_id',$user->id)->pluck('room_id')->toArray();
+    # $status      = !empty($rooms_allow[$room_id]) ? true : false;
+     return $user;
+
 });

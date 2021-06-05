@@ -30,11 +30,13 @@ class ChatroomController extends Controller
         $insertMessage->room_id   = $request->input('room_id') ;
         $insertMessage->sender_id = Auth::user()->id ;
         $insertMessage->save();
-        $test =  Room::find($request->input('room_id'))->users->map(function($value,$index) use ($insertMessage){
-            // return $value;
-            broadcast(new chatroom($insertMessage,$value['id']) )->toOthers();
+        $insertMessage = collect($insertMessage)->put('sender',Auth::user()->name);
+        Room::find($request->input('room_id'))->users->map(function($value,$index) use ($insertMessage){
+            if(Auth::user()->id != $value['id']){
+                broadcast(new chatroom($insertMessage,$value))->toOthers();
+            }
         })->all();
-        return (['test'=>$test,'room_id'=>$request->input('room_id'),'message'=>$request->input('message')]);
+        return (['room_id'=>$request->input('room_id'),'message'=>$request->input('message'),'sender'=>Auth::user()->name]);
     }
 
 
@@ -45,7 +47,7 @@ class ChatroomController extends Controller
      */
     public function showMessages($room_id)
     {
-        $messages = message::where('room_id',$room_id)->latest()->limit(10)->get();
+        $messages = message::where('room_id',$room_id)->with('sender')->latest()->limit(10)->get();
         $filter_messages = collect($messages)->map(function($value,$index){
             $value['type'] = Auth::user()->id == $value->sender_id ? 'ks-from' : 'ks-self';
             return $value;
@@ -84,5 +86,18 @@ class ChatroomController extends Controller
                     }])->get();
 
         return (['messages'=> $rooms]);
+    }
+
+    function userOnline($id){
+         User::where('id',$id)->update(['is_active'=>1]);
+    }
+
+    function userOffline($id){
+          User::where('id',$id)->update(['is_active'=>0]);
+    }
+
+    function getMembers($room_id){
+       $members = Room::find($room_id)->users;
+       return (['members'=> $members]);
     }
 }
