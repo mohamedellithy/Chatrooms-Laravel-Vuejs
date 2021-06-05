@@ -12,12 +12,14 @@
                     <ul id="ks-itemsw" class="ks-items">
                         <message
                             v-for="message in messages"
-                            :sender="message.type == 'ks-self' ? name : ownerChat"
-                            :message="message.Message"
+                            :message="message.textmessage"
+                            :name   ="message.name"
                             :date="message.date"
-                            :image="img"
+                            :image="message.img"
                             :key="message.key"
-                            :type="message.type">
+                            :type="message.type"
+                            :senderID="message.sender"
+                            :OnlineUsers="OnlineUsers">
                         </message>
                     </ul>
                 </div>
@@ -29,13 +31,10 @@
 
 <script>
 export default {
-    name:'Messages',
+    name:'messages',
+    props:['OnlineUsers'],
     data:function(){
         return {
-            id:'11',
-            img:'imp1',
-            name:'Brian Diaz',
-            ownerChat:'Driaw Bitr',
             messages:[],
         }
     },
@@ -50,13 +49,16 @@ export default {
                 let messages = response.data.messages;
                 messages.reverse();
                 selfdata.$Progress.finish();
-                //console.log(response.data.messages);
+                // console.log(response.data.messages);
                 messages.forEach(function(value,key){
                     selfdata.messages.push({
                         key:value.id,
-                        Message:value.message,
+                        textmessage:value.message,
                         date:value.created_at,
                         type:value.type,
+                        sender:value.sender_id,
+                        name:value.sender.name,
+                        img:'img1'
                     });
 
                 });
@@ -83,33 +85,37 @@ export default {
         Event.$on('MessageSent',function(recievedata){
             selfdata.messages.push({
                 key:recievedata.id,
-                Message:recievedata.message,
+                textmessage:recievedata.message,
                 date:recievedata.created_at,
+                name:recievedata.sender,
+                img:'img1',
                 type:'ks-from',
             });
              let messageContainerHeight = document.getElementById('jspContainers');
              let block                  = document.getElementById('jspContainers');
              block.scrollTop = messageContainerHeight.scrollHeight;
-             console.log(messageContainerHeight.scrollHeight);
         });
 
-        Echo.private('ChatroomChannel.'+localStorage.getItem('channelkey'))
+        Echo.private('ChatroomChannel.'+this.$userId)
             .listen('chatroom', (e) => {
-                //console.log(e);
+
                 let comeMessage = e.message;
                 if(comeMessage.room_id == selfdata.$route.params.id){
                     selfdata.messages.push({
                         key:comeMessage.id,
-                        Message:comeMessage.message,
+                        textmessage:comeMessage.message,
                         date:comeMessage.created_at,
                         type:comeMessage.type,
+                        sender:comeMessage.sender_id,
+                        name:comeMessage.sender,
+                        img:'img1'
                     });
                     let messageContainerHeight = $('#ks-itemsw').height();
                     $('#jspContainers').scrollTop(messageContainerHeight + 200);
                 }
-            });
+        });
+    }
 
-    },
 
 
 };

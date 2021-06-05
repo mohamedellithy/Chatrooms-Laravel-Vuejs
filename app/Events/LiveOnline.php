@@ -10,21 +10,22 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use App\User;
-class chatroom implements ShouldBroadcast
+class LiveOnline implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
     public $message;
-    public $user_id;
+    public $user;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($message,User $user)
+    public function __construct(User $user)
     {
         //
-        $this->message    = $message;
-        $this->user_id    = $user['id'];
+        $this->user       = $user;
     }
 
     /**
@@ -34,7 +35,6 @@ class chatroom implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-
-           return new PrivateChannel('ChatroomChannel.'.$this->user_id);
+        return new PresenceChannel('LiveChatroom');
     }
 }

@@ -27,10 +27,6 @@ body {
     top: 35%;
 }
 
-.offline {
-    background-color: gray !important;
-}
-
 .ks-messenger .ks-discussions {
     background: #fff;
     width: 340px;
@@ -78,7 +74,8 @@ body {
 }
 
 .ks-messenger .ks-discussions>.ks-body .ks-items>.ks-item {
-    border-bottom: 1px solid #dee0e1
+    border-bottom: 1px solid #dee0e1;
+    position: relative;
 }
 
 .ks-messenger .ks-discussions>.ks-body .ks-items>.ks-item>a {
@@ -306,7 +303,21 @@ body {
     display: -ms-flexbox;
     -js-display: flex;
     display: flex;
-    margin-bottom: 12px
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.ks-text ul {
+    list-style: none;
+    padding: 10px;
+}
+
+.ks-text ul li {
+    line-height: 2em;
+}
+
+.ks-from .online-green-point {
+    display: none !important;
 }
 
 .ks-messenger .ks-messages>.ks-body .ks-items>.ks-item:last-child,
@@ -776,7 +787,20 @@ body {
 .ks-messenger .ks-info>.ks-body>.ks-item>.ks-name,
 .ks-messenger__info>.ks-body>.ks-item>.ks-name {
     color: #858585;
-    margin-bottom: 3px
+    margin-bottom: 3px;
+    font-size: 17px;
+    background-color: #2196f3;
+    padding: 5px;
+    color: white;
+}
+
+.Memebers .online-green-point-Memebers {
+    width: 12px;
+    height: 12px;
+    background-color: green;
+    border-radius: 50%;
+    position: absolute;
+    right: 40px;
 }
 
 .ks-messenger .ks-info>.ks-body>.ks-list>.ks-header,
@@ -884,6 +908,10 @@ body {
 .ks-messenger .ks-messages>.ks-footer>.ks-controls,
 .ks-messenger__messages>.ks-footer>.ks-controls {
     width: 64px;
+}
+
+.offline {
+    background-color: #b2b6b2 !important;
 }
 
 @media screen and (max-width:1200px) {

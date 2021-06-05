@@ -12,4 +12,8 @@ class message extends Model
     # function WithUsers($query){
     #     return $query->
     # }
+
+     function sender(){
+        return $this->belongsTo('App\User','sender_id','id');
+    }
 }
